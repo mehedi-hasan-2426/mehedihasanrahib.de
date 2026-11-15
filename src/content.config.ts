@@ -21,6 +21,10 @@ const projects = defineCollection({
     imageAlt: z.string().optional(),
     imageWidth: z.number().optional(),
     imageHeight: z.number().optional(),
+    screenshots: z
+      .array(z.object({ src: z.string(), alt: z.string(), label: z.string() }))
+      .length(2)
+      .optional(),
   }),
 });
 

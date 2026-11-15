@@ -1,0 +1,210 @@
+---
+interface Props {
+  images: { src: string; alt: string; label: string }[];
+  width: number;
+  height: number;
+}
+const { images, width, height } = Astro.props;
+---
+
+<project-screenshots class="shot" role="group" aria-label="Project screenshots" data-index="0">
+  <div class="screenshots-stage">
+    {images.map((image, index) => (
+      <img
+        src={image.src}
+        alt={image.alt}
+        width={width}
+        height={height}
+        loading="lazy"
+        decoding="async"
+        data-slide={index}
+        aria-hidden={index !== 0 ? "true" : undefined}
+      />
+    ))}
+  </div>
+  <div class="screenshots-controls" hidden>
+    <div class="screenshots-choices" aria-label="Choose screenshot">
+      {images.map((image, index) => (
+        <button type="button" data-choice={index} aria-pressed={index === 0 ? "true" : "false"}>
+          {image.label}
+        </button>
+      ))}
+    </div>
+    <button type="button" data-play>
+      Pause slideshow
+    </button>
+  </div>
+</project-screenshots>
+
+<script>
+  class ProjectScreenshots extends HTMLElement {
+    connectedCallback() {
+      const slides = Array.from(this.querySelectorAll<HTMLImageElement>("[data-slide]"));
+      const choices = Array.from(this.querySelectorAll<HTMLButtonElement>("[data-choice]"));
+      const play = this.querySelector<HTMLButtonElement>("[data-play]");
+      const controls = this.querySelector<HTMLElement>(".screenshots-controls");
+      if (!play || !controls || slides.length < 2) return;
+      const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const hover = window.matchMedia("(hover: hover) and (pointer: fine)");
+      let paused = motion.matches;
+      let visible = false;
+      let hovered = false;
+      let pointerPaused: boolean | undefined;
+      let index = 0;
+      let timer: ReturnType<typeof setInterval> | undefined;
+      const show = (next: number) => {
+        index = next;
+        this.dataset.index = String(index);
+        slides.forEach((slide, i) => {
+          if (i === index) slide.removeAttribute("aria-hidden");
+          else slide.setAttribute("aria-hidden", "true");
+        });
+        choices.forEach((choice, i) => choice.setAttribute("aria-pressed", String(i === index)));
+      };
+      const sync = () => {
+        clearInterval(timer);
+        play.textContent = paused ? "Play slideshow" : "Pause slideshow";
+        if (!paused && visible && !hovered && !document.hidden) {
+          timer = setInterval(() => show((index + 1) % slides.length), 6000);
+        }
+      };
+      const events = new AbortController();
+      const options = { signal: events.signal };
+      choices.forEach((choice, i) =>
+        choice.addEventListener(
+          "click",
+          () => {
+            paused = true;
+            show(i);
+            sync();
+          },
+          options,
+        ),
+      );
+      play.addEventListener(
+        "pointerdown",
+        () => {
+          pointerPaused = paused;
+        },
+        options,
+      );
+      play.addEventListener(
+        "pointercancel",
+        () => {
+          pointerPaused = undefined;
+        },
+        options,
+      );
+      play.addEventListener(
+        "click",
+        () => {
+          paused = !(pointerPaused ?? paused);
+          pointerPaused = undefined;
+          sync();
+        },
+        options,
+      );
+      this.addEventListener(
+        "focusin",
+        () => {
+          paused = true;
+          sync();
+        },
+        options,
+      );
+      this.addEventListener(
+        "pointerenter",
+        () => {
+          hovered = hover.matches;
+          sync();
+        },
+        options,
+      );
+      this.addEventListener(
+        "pointerleave",
+        () => {
+          hovered = false;
+          sync();
+        },
+        options,
+      );
+      motion.addEventListener(
+        "change",
+        () => {
+          paused = motion.matches;
+          sync();
+        },
+        options,
+      );
+      document.addEventListener("visibilitychange", sync, options);
+      const observer = new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        sync();
+      });
+      observer.observe(this);
+      controls.hidden = false;
+      sync();
+      this.cleanup = () => {
+        clearInterval(timer);
+        observer.disconnect();
+        events.abort();
+      };
+    }
+
+    cleanup?: () => void;
+
+    disconnectedCallback() {
+      this.cleanup?.();
+    }
+  }
+  customElements.define("project-screenshots", ProjectScreenshots);
+</script>
+
+<style>
+  project-screenshots {
+    display: block;
+  }
+  .screenshots-stage {
+    display: grid;
+  }
+  .screenshots-stage img {
+    grid-area: 1 / 1;
+    opacity: 0;
+    transition: opacity 600ms var(--ease-out);
+  }
+  project-screenshots[data-index="0"] [data-slide="0"],
+  project-screenshots[data-index="1"] [data-slide="1"] {
+    opacity: 1;
+  }
+  .screenshots-controls:not([hidden]),
+  .screenshots-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .screenshots-controls {
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-top: 1px solid var(--line);
+  }
+  button {
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--fg);
+    font: inherit;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  button[aria-pressed="true"] {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .screenshots-stage img {
+      transition-duration: 200ms;
+    }
+  }
+</style>

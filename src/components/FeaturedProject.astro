@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import ProjectScreenshots from "./ProjectScreenshots.astro";
 
 interface Props {
   project: CollectionEntry<"projects">;
@@ -10,17 +11,21 @@ const tone = p.status === "Live" ? "live" : p.status === "Work in progress" ? "w
 ---
 
 <article class="featured-project" data-project={project.id}>
-  {p.image && (
-    <figure class="shot">
-      <img
-        src={p.image}
-        alt={p.imageAlt ?? ""}
-        width={p.imageWidth}
-        height={p.imageHeight}
-        loading="lazy"
-        decoding="async"
-      />
-    </figure>
+  {p.screenshots ? (
+    <ProjectScreenshots images={p.screenshots} width={p.imageWidth ?? 1440} height={p.imageHeight ?? 900} />
+  ) : (
+    p.image && (
+      <figure class="shot">
+        <img
+          src={p.image}
+          alt={p.imageAlt ?? ""}
+          width={p.imageWidth}
+          height={p.imageHeight}
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    )
   )}
   <div class="featured-body">
     <p class="badge" data-tone={tone}>
