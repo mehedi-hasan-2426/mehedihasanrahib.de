@@ -44,6 +44,8 @@ The hero background (`public/hero-bg.avif`, `public/hero-bg.webp`) and the share
 - Projects: one MDX file per project in `src/content/projects`
 - Experience, education, skills and languages: `src/cv.ts`
 
+Sprichio keeps its original case-study path, `/projects/sprungbrett-deutsch`, so existing links still work.
+
 ## Checks
 
 ```powershell

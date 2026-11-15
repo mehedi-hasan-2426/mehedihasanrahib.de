@@ -1,18 +1,18 @@
 ---
-name: Sprungbrett Deutsch
-summary: German practice for A2 learners. Exercises check answers right away, and guests can try it without an account.
+name: Sprichio
+summary: German practice for everyday life, with grammar, vocabulary and conversations. Try it as a guest without an account.
 status: Live
 stack: [Next.js, TypeScript, NextAuth, Neon Postgres, Vercel]
-repo: https://github.com/mehedi-hasan-2426/sprungbrett-deutsch
-live: https://sprung.mehedihasanrahib.de
+repo: https://github.com/mehedi-hasan-2426/sprichio
+live: https://sprichio.de
 order: 1
 featured: true
 problem: A2 learners need short daily practice with instant feedback, not a folder of PDFs.
-solution: A Next.js app with 12 everyday topics, 28 grammar topics and 1,290 exercises that check each answer right away. Google sign-in syncs progress; guests can start without an account.
+solution: A Next.js app with 12 everyday topics, 35 grammar topics, spaced-repetition flashcards and writing practice. Guests keep progress in their browser; approved Google accounts can save to the cloud.
 impact: Live on its own domain. Every pull request has to pass unit, content and Playwright tests, CodeQL and a secret scan before it can merge.
 architecture: [Browser, Next.js on Vercel, NextAuth with Google, Neon Postgres]
 image: /projects/sprungbrett.webp
-imageAlt: Sprungbrett Deutsch today page in guest mode, with the placement test, flashcards and topic 1
+imageAlt: Earlier Sprichio learning dashboard, originally called Sprungbrett Deutsch, with the placement test, flashcards and topic 1
 imageWidth: 1200
 imageHeight: 750
 ---
@@ -21,12 +21,19 @@ imageHeight: 750
 
 Learners preparing for A2 need short daily practice with instant feedback, not a pile of PDFs.
 
+Originally called Sprungbrett Deutsch, the project is now Sprichio at [sprichio.de](https://sprichio.de).
+
 ## What I built
 
 - 12 weekly units with vocabulary, grammar, reading, speaking, writing and quizzes
+- 35 grammar topics with explanations, examples and graded practice
+- A public introduction with a sample exercise before entering the course
 - Google sign-in for approved accounts plus a guest mode that keeps progress in the browser
 - Progress sync to Postgres with session ownership, origin checks and versioned saves
 - Flashcards with spaced repetition and a writing area with model texts and self-assessment
+
+Guest progress stays in the browser and can be exported as a backup. It is never automatically uploaded to an
+account. Google sign-in is limited to approved accounts. Listening practice is not finished yet.
 
 ## How it is checked
 
