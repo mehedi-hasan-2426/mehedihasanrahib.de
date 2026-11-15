@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import ProjectScreenshots from "../../components/ProjectScreenshots.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -31,10 +32,14 @@ const p = project.data;
         GitHub
       </a>
     </p>
-    {p.image && (
-      <figure class="shot">
-        <img src={p.image} alt={p.imageAlt ?? ""} width={p.imageWidth} height={p.imageHeight} decoding="async" />
-      </figure>
+    {p.screenshots ? (
+      <ProjectScreenshots images={p.screenshots} width={p.imageWidth ?? 1440} height={p.imageHeight ?? 900} />
+    ) : (
+      p.image && (
+        <figure class="shot">
+          <img src={p.image} alt={p.imageAlt ?? ""} width={p.imageWidth} height={p.imageHeight} decoding="async" />
+        </figure>
+      )
     )}
     {p.architecture && (
       <section aria-labelledby="arch">

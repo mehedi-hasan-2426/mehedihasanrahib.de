@@ -138,6 +138,62 @@ test("unknown page shows 404", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Page not found");
 });
 
+test("Sprichio screenshots rotate, pause and support manual selection on both pages", async ({ page }) => {
+  await page.clock.install();
+  for (const path of ["/", "/projects/sprungbrett-deutsch"]) {
+    await page.goto(path);
+    const gallery = page.locator("project-screenshots");
+    await gallery.scrollIntoViewIfNeeded();
+    await page.mouse.move(0, 0);
+    await expect(gallery.getByRole("button", { name: "Pause slideshow" })).toBeVisible();
+    await expect(gallery).toHaveAttribute("data-index", "0");
+    for (const image of await gallery.locator("img").all()) {
+      await expect(image).toHaveJSProperty("complete", true);
+      expect(await image.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(1440);
+    }
+    await page.clock.runFor(6500);
+    await expect(gallery).toHaveAttribute("data-index", "1");
+    await gallery.getByRole("button", { name: "Pause slideshow" }).click();
+    await page.mouse.move(0, 0);
+    await page.clock.runFor(12000);
+    await expect(gallery).toHaveAttribute("data-index", "1");
+    await expect(gallery.getByRole("button", { name: "Play slideshow" })).toBeVisible();
+    await gallery.getByRole("button", { name: "Landing page", exact: true }).click();
+    await expect(gallery).toHaveAttribute("data-index", "0");
+    await expect(gallery.getByRole("img", { name: /landing page/ })).toHaveCount(1);
+    await gallery.getByRole("button", { name: "Guest dashboard", exact: true }).click();
+    await expect(gallery).toHaveAttribute("data-index", "1");
+    await expect(gallery.getByRole("button", { name: "Guest dashboard", exact: true })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await gallery.getByRole("button", { name: "Play slideshow" }).click();
+    await page.mouse.move(0, 0);
+    await page.clock.runFor(6500);
+    await expect(gallery).toHaveAttribute("data-index", "0");
+  }
+});
+
+test("reduced motion starts screenshots paused and keyboard focus stops playback", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.clock.install();
+  await page.goto("/");
+  const gallery = page.locator("project-screenshots");
+  await gallery.scrollIntoViewIfNeeded();
+  await expect(gallery.getByRole("button", { name: "Play slideshow" })).toBeVisible();
+  await page.clock.runFor(13000);
+  await expect(gallery).toHaveAttribute("data-index", "0");
+  await gallery.getByRole("button", { name: "Guest dashboard", exact: true }).click();
+  await expect(gallery).toHaveAttribute("data-index", "1");
+  await expect(gallery.locator("img").first()).toHaveCSS("transition-duration", "0.2s");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(gallery.getByRole("button", { name: "Pause slideshow" })).toBeVisible();
+  await gallery.getByRole("button", { name: "Landing page", exact: true }).focus();
+  await expect(gallery.getByRole("button", { name: "Play slideshow" })).toBeVisible();
+  await page.clock.runFor(13000);
+  await expect(gallery).toHaveAttribute("data-index", "1");
+});
+
 test("external links are https", async ({ page }) => {
   await page.goto("/");
   const hrefs = await page.locator('a[href^="http"]').evaluateAll((as) => as.map((a) => a.getAttribute("href") ?? ""));
