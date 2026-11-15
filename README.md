@@ -46,9 +46,9 @@ The hero background (`public/hero-bg.avif`, `public/hero-bg.webp`) and the share
 
 Sprichio keeps its original case-study path, `/projects/sprungbrett-deutsch`, so existing links still work.
 Its two WebP screenshots were captured from the live landing page and a fresh guest dashboard on 15 November 2026
-at 1440 × 900. The screenshot pair crossfades every six seconds on the homepage and case study. Controls select
-either view or pause playback; focus pauses playback, hover pauses on fine pointers, and offscreen/hidden pages
-stop the timer. Reduced-motion users start paused and get a shorter fade when selecting a screenshot.
+at 1440 × 900. The screenshot pair crossfades automatically every two seconds on the homepage and case study,
+without a visible button bar. A pause/play button appears only on keyboard focus and remains available to screen
+readers. Focus pauses playback, and offscreen/hidden pages stop the timer. Reduced-motion users start paused.
 
 ## Checks
 
