@@ -18,7 +18,7 @@ export const education = [
     when: "2021 – 2023",
     title: "Biotechnology studies, discontinued",
     place: "Hochschule Niederrhein",
-    text: "",
+    text: "I decided to discontinue my studies to pursue my growing interest in software development and technology.",
   },
   {
     when: "2019 – 2020",

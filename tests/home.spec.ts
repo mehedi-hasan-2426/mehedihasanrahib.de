@@ -15,15 +15,21 @@ test("home shows name, projects and working anchors", async ({ page }) => {
   }
   await expect(page.locator(".featured-project").first().getByRole("link", { name: "Live demo" })).toHaveAttribute(
     "href",
-    "https://sprung.mehedihasanrahib.de",
+    "https://sprichio.de",
   );
   await expect(page.locator("#skills [data-use=work]").first()).toBeVisible();
-  await expect(page.locator(".availability")).toContainText("2027");
+  await expect(page.locator(".availability")).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText("Open to junior");
+  await expect(page.locator(".featured-project").first().getByRole("heading")).toHaveText("Sprichio");
+  await expect(page.locator(".featured-project").first()).toContainText("35 grammar topics");
   await expect(page).toHaveTitle(/Software developer, cloud and DevOps/);
   await expect(page.locator("#experience .timeline li")).toHaveCount(1);
   await expect(page.locator("#education .timeline li")).toHaveCount(3);
   await expect(page.locator("#education")).toContainText("Biotechnology studies, discontinued");
   await expect(page.locator("#education")).toContainText("Hochschule Niederrhein");
+  await expect(page.locator("#education")).toContainText(
+    "I decided to discontinue my studies to pursue my growing interest in software development and technology.",
+  );
   await expect(page.locator("#education")).toContainText("Studienkolleg");
   await expect(page.locator("#education")).toContainText("Hochschule Anhalt");
   await expect(page.locator("#experience")).toContainText("Nov 2024 – 2027, ongoing");
@@ -37,7 +43,9 @@ test("home shows name, projects and working anchors", async ({ page }) => {
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
   await page.getByRole("navigation", { name: "Main" }).getByRole("link", { name: "About" }).click();
   await expect(page).toHaveURL(/#about$/);
-  await expect(page.locator("#about")).toContainText("Before moving into IT, I studied biotechnology.");
+  await expect(page.locator("#about")).toContainText(
+    "decided to discontinue my studies to pursue my growing interest in software development and technology.",
+  );
   await expect(page.locator("#about")).toContainText("expected to finish in 2027");
   await expect(page.locator("#experience")).toContainText("Training in application development");
   for (const technology of [
@@ -110,13 +118,18 @@ test("case study link opens the project page with architecture", async ({ page }
   await page.goto("/");
   await page.locator('[data-project="sprungbrett-deutsch"]').getByRole("link", { name: "Case study" }).click();
   await expect(page).toHaveURL(/\/projects\/sprungbrett-deutsch\/?$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sprungbrett Deutsch");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sprichio");
   await expect(page.getByRole("link", { name: "GitHub", exact: true })).toHaveAttribute(
     "href",
-    /github\.com\/mehedi-hasan-2426\/sprungbrett-deutsch/,
+    "https://github.com/mehedi-hasan-2426/sprichio",
   );
+  await expect(page.getByRole("link", { name: "Live demo", exact: true })).toHaveAttribute(
+    "href",
+    "https://sprichio.de",
+  );
+  await expect(page.locator("main")).toContainText("35 grammar topics");
   await expect(page.getByRole("heading", { level: 2, name: "Architecture" })).toBeVisible();
-  await expect(page).toHaveTitle("Sprungbrett Deutsch | Mehedi Hasan Rahib");
+  await expect(page).toHaveTitle("Sprichio | Mehedi Hasan Rahib");
 });
 
 test("unknown page shows 404", async ({ page }) => {

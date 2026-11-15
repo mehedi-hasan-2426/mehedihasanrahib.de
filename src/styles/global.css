@@ -150,25 +150,6 @@ nav a {
 .intro > :nth-child(5) {
   animation-delay: 240ms;
 }
-.availability {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  align-self: flex-start;
-  margin: 0 0 var(--space-4);
-  padding: 0.3rem 0.8rem;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(8, 13, 26, 0.6);
-  font-size: 0.875rem;
-  color: var(--fg);
-}
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #4ade80;
-}
 h1 {
   font: 700 clamp(2.4rem, 6.5vw, 4.4rem)/1.05 var(--display);
   letter-spacing: -0.03em;
