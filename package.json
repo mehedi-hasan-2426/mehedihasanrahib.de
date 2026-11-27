@@ -35,7 +35,7 @@
     "@astrojs/vercel": "11.0.22",
     "@tailwindcss/vite": "4.3.5",
     "astro": "7.4.13",
-    "hono": "4.13.19",
+    "hono": "4.13.23",
     "motion": "14.14.0",
     "react": "19.3.1",
     "react-dom": "19.3.1",
